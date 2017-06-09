@@ -1,0 +1,9 @@
+Nexus: Core Server
+Pylon: Proxy
+Probe: Client
+
+To add commands to a client:
+curl http://localhost:5000/client/<client_id>/add_command -i -H "Content-Type: application/json" -X POST -d '{"command":"ls"}'
+
+ex:
+curl http://localhost:5000/client/0/add_command -i -H "Content-Type: application/json" -X POST -d '{"command":"ls"}'
