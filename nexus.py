@@ -33,7 +33,7 @@ def register():
     return jsonify({"client_id": client_id})
 
 
-@app.route("/client/<int:client_id>/heartbeat", methods=["POST"])
+@app.route("/client/<int:client_id>/beacon", methods=["POST"])
 def get_client(client_id):
 
     print ("Data Received From %s" % client_id)

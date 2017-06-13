@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request, abort
-import requests
+from pylon import Pylon
 
-NEXUS_URL = "http://localhost:5000"
+pylon = Pylon("http://localhost:5000")
 
 app = Flask(__name__)
 
@@ -13,18 +13,24 @@ def client_post():
 
     if request.json["action"] == "register":
         print("Register Request Received")
-        data = request.json
-        data["address"] = request.remote_addr
-        r = requests.post(NEXUS_URL + "/register", json=request.json)
-        return r.text
 
-    if request.json["action"] == "heartbeat":
-        print("Heartbeat Received From %s" % request.remote_addr)
-        r = requests.post(NEXUS_URL + "/client/%s/heartbeat" % request.json["id"], json=request.json)
-        return r.text
+        reply = pylon.register(request.remote_addr)
+        # # Get remote address
+        # address = request.remote_addr
+        #
+        # # Register probe with Nexus
+        # nexus_reply = pylon.register(address)
+        #
+        # # Create return payload
+        # reply = nexus_reply
 
+        return jsonify(reply)
 
-def client_get():
-    pass
+    if request.json["action"] == "beacon":
+        print("Beacon Received From %s" % request.remote_addr)
+        client_id = request.json["client_id"]
+
+        nexus_reply = pylon.beacon(client_id, request.json)
+        return jsonify(nexus_reply)
 
 app.run(port=9999)
